@@ -7,22 +7,11 @@
 #include "ff.h"
 #include "diskio.h"
 
-// ---------------- LED functions ----------------
-
-//*****************************************************************************
 // FatFs mandatory RTC function. Returns current time in FAT format.
 // This example returns a fixed time: 1st Jan 2025, 0:00:00.
-//*****************************************************************************
+
 DWORD get_fattime (void)
 {
-    /* Packed time format:
-     * Bit 31:25 - Year offset from 1980 (0..127)
-     * Bit 24:21 - Month (1..12)
-     * Bit 20:16 - Day (1..31)
-     * Bit 15:11 - Hour (0..23)
-     * Bit 10:5  - Minute (0..59)
-     * Bit 4:0   - Second / 2 (0..29)
-     */
     return ((DWORD)(2025 - 1980) << 25) // Year = 2025 (45)
           | ((DWORD)1 << 21)           // Month = 1 (January)
           | ((DWORD)1 << 16)           // Day = 1
@@ -30,9 +19,6 @@ DWORD get_fattime (void)
           | ((DWORD)0 << 5)            // Minute = 0
           | ((DWORD)0 >> 1);           // Second = 0
 }
-
-// ---------------- LED functions ----------------
-// ... rest of your main.c code ...
 
 
 void LED_Init(void)
@@ -89,6 +75,7 @@ int main(void)
         }
 
         // Hardware is Good!
+    
         LED(0,0,1); // BLUE: Hardware OK
         Delay_ms(500);
 
@@ -119,7 +106,7 @@ int main(void)
 
     f_close(&file);
 
-    LED(1,0,1);   // PURPLE: read done
+    LED(1,0,1);   // PURPLE: File closed
 
 
 
