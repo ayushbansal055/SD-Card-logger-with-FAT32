@@ -17,7 +17,7 @@
 
 static volatile DSTATUS Stat = STA_NOINIT;
 
-// ----------------------- SPI helpers -----------------------
+// SPI helpers
 static void spi_init(void)
 {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
@@ -59,7 +59,7 @@ static void cs_high(void)
     spi_txrx(0xFF); // Send clock pulse to meet SD timing requirement
 }
 
-// ----------------------- Send CMD (CORRECTED) -----------------------
+//Send CMD
 static uint8_t send_cmd(uint8_t cmd, uint32_t arg)
 {
     uint8_t res;
@@ -70,7 +70,7 @@ static uint8_t send_cmd(uint8_t cmd, uint32_t arg)
     if (cmd == 0) crc = 0x95;
     if (cmd == 8) crc = 0x87;
 
-    // --- NEW: ENSURE CS IS HIGH BEFORE STARTING ---
+    // NEW: ENSURE CS IS HIGH BEFORE STARTING
     cs_high(); 
     spi_txrx(0xFF); // Send a dummy clock pulse
 
@@ -95,12 +95,12 @@ static uint8_t send_cmd(uint8_t cmd, uint32_t arg)
         }
     }
 
-    // --- NEW: MUST DESELECT IF RESPONSE IS NOT FOUND ---
+    // NEW: MUST DESELECT IF RESPONSE IS NOT FOUND
     cs_high();
     return res; 
 }
 
-// ----------------------- Disk I/O API: Initialize (CORRECTED) -----------------------
+// Disk I/O API: Initialize
 DSTATUS disk_initialize(BYTE drv)
 {
     uint8_t type = 0; 
@@ -141,14 +141,6 @@ DSTATUS disk_initialize(BYTE drv)
         res = send_cmd(41, arg);
         
         if (res == 0) { 
-            // Initialization Complete!
-            
-            // --- CRITICAL FIX: REDUCE DATA TRANSFER SPEED ---
-            // Increase the speed to a faster rate for data transfer (e.g., 5MHz)
-            // You must use the DriverLib function here:
-            // SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0,
-            //                    SSI_MODE_MASTER, 5000000, 8);
-
             Stat &= ~STA_NOINIT;
             cs_high();
             return Stat;
@@ -228,7 +220,6 @@ DRESULT disk_write(BYTE drv, const BYTE* buff, DWORD sector, BYTE count)
         if ((resp & 0x1F) != 0x05)
             return RES_ERROR;
 
-        // --- CRITICAL FIX 2: ROBUST BUSY WAIT ---
         // Add robust software timeout for card internal programming.
         timeout = 0;
         while(spi_txrx(0xFF) != 0xFF) {
