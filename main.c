@@ -59,7 +59,6 @@ void Delay_ms(uint32_t ms)
     SysCtlDelay((SysCtlClockGet()/3000)*ms);
 }
 
-// ---------------- Main ----------------
 FATFS fs;
 FIL file;
 UINT bw, br;
@@ -118,28 +117,6 @@ int main(void)
         while(1) LED(1,0,0);
     }
 
-    f_close(&file);
-
-
-    // APPEND to file
-        f_open(&file, "tests.txt", FA_WRITE | FA_OPEN_ALWAYS);  // open or create
-        f_lseek(&file, f_size(&file));                         // move to end of file
-        f_write(&file, "APPENDED LINE\n", 15, &bw);             // write new data
-        f_close(&file);
-
-    LED(1,1,0);   // YELLOW: write done
-
-    f_open(&file, "tests.txt", FA_WRITE | FA_OPEN_ALWAYS);
-    int i;
-    for ( i = 1; i <= 10; i++)
-    {
-        f_lseek(&file, f_size(&file));       // move pointer to end
-
-        // convert i into text
-        sprintf(line, "%d\n", i);
-
-        f_write(&file, line, strlen(line), &bw);
-    }
     f_close(&file);
 
     LED(1,0,1);   // PURPLE: read done
