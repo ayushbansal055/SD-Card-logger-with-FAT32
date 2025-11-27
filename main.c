@@ -102,23 +102,12 @@ int main(void)
     Delay_ms(500);
 
     // --- Stage 2: Create file ---
-    if (f_open(&file, "tests.txt", FA_WRITE | FA_CREATE_ALWAYS) != FR_OK)
-    {
-        while(1) LED(1,0,0); // ERROR red
+
+    if(f_unlink("test.txt") == FR_OK){
+        while(1){
+            LED(0,1,0);
+        }
     }
-
-    LED(0,0,1);   // BLUE: file created
-    Delay_ms(500);
-
-
-    // --- Stage 3: Write ---
-    if (f_write(&file, "FIRST LINE\n", 11, &bw) != FR_OK)
-    {
-        while(1) LED(1,0,0);
-    }
-
-    f_close(&file);
-
     LED(1,0,1);   // PURPLE: read done
 
 
