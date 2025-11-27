@@ -222,7 +222,6 @@ DRESULT disk_write(BYTE drv, const BYTE* buff, DWORD sector, BYTE count)
             return RES_ERROR;
 
         // --- CRITICAL FIX 2: ROBUST BUSY WAIT ---
-        // Add robust software timeout for card internal programming.
         timeout = 0;
         while(spi_txrx(0xFF) != 0xFF) {
             if (timeout++ > 0x100000) return RES_ERROR; // Increased timeout for stability
