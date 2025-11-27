@@ -59,7 +59,7 @@ static void cs_high(void)
     spi_txrx(0xFF); // Send clock pulse to meet SD timing requirement
 }
 
-// ----------------------- Send CMD (CORRECTED) -----------------------
+// Send CMD
 static uint8_t send_cmd(uint8_t cmd, uint32_t arg)
 {
     uint8_t res;
@@ -141,13 +141,6 @@ DSTATUS disk_initialize(BYTE drv)
         res = send_cmd(41, arg);
         
         if (res == 0) { 
-            // Initialization Complete!
-            
-            // --- CRITICAL FIX: REDUCE DATA TRANSFER SPEED ---
-            // Increase the speed to a faster rate for data transfer (e.g., 5MHz)
-            // You must use the DriverLib function here:
-            // SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0,
-            //                    SSI_MODE_MASTER, 5000000, 8);
 
             Stat &= ~STA_NOINIT;
             cs_high();
