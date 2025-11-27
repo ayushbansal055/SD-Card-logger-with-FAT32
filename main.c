@@ -71,10 +71,11 @@ int main(void)
     }
 
         // Hardware is Good!
+    
         LED(0,0,1); // BLUE: Hardware OK
         Delay_ms(500);
 
-    // --- Stage 1: Mount SD ---
+    //Stage 1: Mount SD 
     if (f_mount(0, &fs) != FR_OK)
     {
         while(1) LED(1,0,0); // ERROR red
@@ -83,12 +84,11 @@ int main(void)
     LED(0,1,0);   // GREEN: mounted
     Delay_ms(500);
 
-    // --- Stage 2: Create file ---
 
-
-    // APPEND to file
-        f_open(&file, "tests.txt", FA_WRITE | FA_OPEN_ALWAYS);  // open or create
-        f_lseek(&file, f_size(&file));                         // move to end of file
+    // Stage 2: Open the exixting file
+    
+        f_open(&file, "tests.txt", FA_WRITE | FA_OPEN_ALWAYS);  // Open
+        f_lseek(&file, f_size(&file));                         // Move to end of file
         f_write(&file, "APPENDED to LINE\n", 18, &bw);             // write new data
 
 
@@ -106,7 +106,7 @@ int main(void)
     }
     f_close(&file);
 
-    LED(1,0,1);   // PURPLE: read done
+    LED(1,0,1);   // PURPLE: File close
 
 
 
